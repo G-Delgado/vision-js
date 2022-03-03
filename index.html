@@ -25,6 +25,8 @@
                 constructor(props) {
                     super(props);
                     this.state = {
+                        finished: false,
+                        counterTime: 0,
                         lastTime: 0,
                         minutes: 1,
                         seconds: 0,
@@ -42,13 +44,25 @@
                             minutes: 0
                         }))
                     } else {
-                        this.setState(state => ({
-                            seconds : state.seconds - 1
-                        }))
+                        if (this.state.seconds > 0) {
+                            this.setState(state => ({
+                                seconds : state.seconds - 1
+                            }))
+                        } else {
+                            this.state.finished = true
+                            console.log("I'm done!")
+                            clearInterval(this.interval)
+
+                        }
                     }
                 }   
 
                 handleClick(i) {
+
+                    if (this.state.finished == true) {
+                        return;
+                    }
+
                     const squares = this.state.squares.slice();
                     if (i == this.state.word.toLowerCase()) {
                         squares[i] = 'V';
@@ -59,10 +73,12 @@
                     }
                     if (this.state.lastTime == 0 && this.state.minutes != 1) {
                         this.state.lastTime = 60 - (this.state.seconds)
+                        this.state.counterTime = this.state.seconds
                     } else if (this.state.minutes != 0){
                         this.state.lastTime = 0
                     } else {
-                        this.state.lastTime = this.state.lastTime - this.state.seconds
+                        this.state.lastTime = this.state.counterTime - this.state.seconds
+                        this.state.counterTime = this.state.seconds
                     }
                     this.setState({squares: squares});
                     this.randomWord()
@@ -102,7 +118,7 @@
                     return (
                     <div>
                         <div>{this.state.minutes}:{this.state.seconds}</div>
-                        <div className="status"><h3>{this.state.word} : {this.state.lastTime}</h3></div>
+                        <div className="status"><h3>{this.state.word} : {this.state.lastTime} Seconds</h3></div>
                         <div className="board-row">
                         {this.renderSquare("a8")}
                         {this.renderSquare("b8")}
