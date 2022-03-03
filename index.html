@@ -12,7 +12,172 @@
   <body>
     <div id="root"></div>
         <script type="text/babel">
+            function Square(props){
+                return (
+                    <button className="square" onClick={props.onClick}>
+                        {props.value}
+                    </button>
+                );
+            }
 
+            class Board extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        lastTime: 0,
+                        minutes: 1,
+                        seconds: 0,
+                        score: 0,
+                        word: "",
+                        i: 0,
+                        squares: Array(64).fill(null),
+                    }
+                }
+
+                tick() {
+                    if (this.state.minutes > 0) {
+                        this.setState(state => ({
+                            seconds : 59,
+                            minutes: 0
+                        }))
+                    } else {
+                        this.setState(state => ({
+                            seconds : state.seconds - 1
+                        }))
+                    }
+                }   
+
+                handleClick(i) {
+                    const squares = this.state.squares.slice();
+                    if (i == this.state.word.toLowerCase()) {
+                        squares[i] = 'V';
+                        this.state.score = this.state.score + 1
+                        //console.log(60 - (this.state.minutes + this.state.seconds))
+                    } else {
+                        squares[i] = 'X';
+                    }
+                    if (this.state.lastTime == 0 && this.state.minutes != 1) {
+                        this.state.lastTime = 60 - (this.state.seconds)
+                    } else if (this.state.minutes != 0){
+                        this.state.lastTime = 0
+                    } else {
+                        this.state.lastTime = this.state.lastTime - this.state.seconds
+                    }
+                    this.setState({squares: squares});
+                    this.randomWord()
+                }
+
+                componentDidMount() {
+                    this.interval = setInterval(() => this.tick(), 1000);
+                    this.randomWord()
+                }
+
+
+                componentWillUnmount() {
+                    clearInterval(this.interval);
+                }
+
+                renderSquare(i) {
+                    return (
+                        <Square
+                        value={this.state.squares[i]}
+                        onClick={() => this.handleClick(i)}
+                        />
+                    );
+                    this.state.i = this.state.i + 1
+                }
+
+                render() {
+                //const status = 'Next player: X';
+                    return (
+                    <div>
+                        <div>{this.state.minutes}:{this.state.seconds}</div>
+                        <div className="status"><h3>{this.state.word} : {this.state.lastTime}</h3></div>
+                        <div className="board-row">
+                        {this.renderSquare("a8")}
+                        {this.renderSquare("b8")}
+                        {this.renderSquare("c8")}
+                        {this.renderSquare("d8")}
+                        {this.renderSquare("e8")}
+                        {this.renderSquare("f8")}
+                        {this.renderSquare("g8")}
+                        {this.renderSquare("h8")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a7")}
+                        {this.renderSquare("b7")}
+                        {this.renderSquare("c7")}
+                        {this.renderSquare("d7")}
+                        {this.renderSquare("e7")}
+                        {this.renderSquare("f7")}
+                        {this.renderSquare("g7")}
+                        {this.renderSquare("h7")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a6")}
+                        {this.renderSquare("b6")}
+                        {this.renderSquare("c6")}
+                        {this.renderSquare("d6")}
+                        {this.renderSquare("e6")}
+                        {this.renderSquare("f6")}
+                        {this.renderSquare("g6")}
+                        {this.renderSquare("h6")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a5")}
+                        {this.renderSquare("b5")}
+                        {this.renderSquare("c5")}
+                        {this.renderSquare("d5")}
+                        {this.renderSquare("e5")}
+                        {this.renderSquare("f5")}
+                        {this.renderSquare("g5")}
+                        {this.renderSquare("h5")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a4")}
+                        {this.renderSquare("b4")}
+                        {this.renderSquare("c4")}
+                        {this.renderSquare("d4")}
+                        {this.renderSquare("e4")}
+                        {this.renderSquare("f4")}
+                        {this.renderSquare("g4")}
+                        {this.renderSquare("h4")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a3")}
+                        {this.renderSquare("b3")}
+                        {this.renderSquare("c3")}
+                        {this.renderSquare("d3")}
+                        {this.renderSquare("e3")}
+                        {this.renderSquare("f3")}
+                        {this.renderSquare("g3")}
+                        {this.renderSquare("h3")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a2")}
+                        {this.renderSquare("b2")}
+                        {this.renderSquare("c2")}
+                        {this.renderSquare("d2")}
+                        {this.renderSquare("e2")}
+                        {this.renderSquare("f2")}
+                        {this.renderSquare("g2")}
+                        {this.renderSquare("h2")}
+                        </div>
+                        <div className="board-row">
+                        {this.renderSquare("a1")}
+                        {this.renderSquare("b1")}
+                        {this.renderSquare("c1")}
+                        {this.renderSquare("d1")}
+                        {this.renderSquare("e1")}
+                        {this.renderSquare("f1")}
+                        {this.renderSquare("g1")}
+                        {this.renderSquare("h1")}
+                        </div>
+                        <div>Score: {this.state.score}</div>
+                    </div>
+                    );
+                }
+            }
         </script>
     </body>
 </html>
