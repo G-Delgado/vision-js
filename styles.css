@@ -1,10 +1,17 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
+    display:flex;
+    justify-content: center;
   }
   
   ol, ul {
     padding-left: 30px;
+  }
+
+  .score {
+    font-size: 16px;
+    font-weight: bold;
   }
   
   .board-row:after {
@@ -16,10 +23,17 @@ body {
   .status {
     margin-bottom: 10px;
   }
+
+  .div-link {
+    pointer-events: none;
+    text-decoration: none;
+    color: black;
+    margin: 0px 0px 0px 15px
+  }
   
   .square {
     background: #fff;
-    border: 1px solid #999;
+    border: 1px solid #000;
     float: left;
     font-size: 24px;
     font-weight: bold;
@@ -31,6 +45,17 @@ body {
     text-align: center;
     width: 34px;
     transition: .15s;
+  }
+
+  .words-spacing {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .words-link {
+    pointer-events: none;
+    text-decoration: none;
+    color: black;
   }
 
   .square:hover {
@@ -54,3 +79,22 @@ body {
     margin-left: 20px;
   }
   
+  .play-btn {
+    display:inline-block;
+    padding:0.35em 1.2em;
+    border:0.1em solid #3ea7ee;
+    margin:0 0.3em 0.3em 0;
+    border-radius:0.12em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#3ea7ee;
+    text-align:center;
+    transition: all 0.2s;
+  }
+
+  .play-btn:hover {
+    color:#000000;
+    background-color: rgb(148, 203, 240);
+  }

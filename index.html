@@ -15,22 +15,34 @@
             
             function Square(props){
                 return (
-                    <button className="square" onClick={props.onClick}>
+                    <button style={{backgroundColor: props.color}} onMouseOver={mouseOver}  onMouseOut={mouseOut} className="square" onClick={props.onClick}>
                         {props.value}
                     </button>
                 );
+            }
+
+            function mouseOver(event) {
+                event.target.style.transition = ".3s"
+                event.target.style.opacity = 0.5
+            }
+
+            function mouseOut(event) {
+                event.target.style.transition = ".8s"
+                event.target.style.opacity = 1
             }
 
             class Board extends React.Component {
                 constructor(props) {
                     super(props);
                     this.state = {
-                        finished: false,
+                        finished: true,
                         counterTime: 0,
                         lastTime: 0,
                         minutes: 1,
                         seconds: 0,
                         score: 0,
+                        // Esta variable es para evitar el error del tiempo cuando se da click rapido :c ↓
+                        times: 0,
                         word: "",
                         i: 0,
                         squares: Array(64).fill(null),
@@ -49,6 +61,7 @@
                                 seconds : state.seconds - 1
                             }))
                         } else {
+                            alert(`The game finished. Your score is: ${this.state.score}`)
                             this.state.finished = true
                             console.log("I'm done!")
                             clearInterval(this.interval)
@@ -60,23 +73,25 @@
                 handleClick(i) {
 
                     if (this.state.finished == true) {
+                        alert(`The game finished. Your score is: ${this.state.score}`)
                         return;
                     }
 
                     const squares = this.state.squares.slice();
                     if (i == this.state.word.toLowerCase()) {
-                        squares[i] = 'V';
+                        squares[i] = '✔';
                         this.state.score = this.state.score + 1
                         //console.log(60 - (this.state.minutes + this.state.seconds))
                     } else {
                         squares[i] = 'X';
                     }
-                    if (this.state.lastTime == 0 && this.state.minutes != 1) {
+                    if (this.state.lastTime == 0 && this.state.minutes != 1 && this.state.times < 1) {
                         this.state.lastTime = 60 - (this.state.seconds)
                         this.state.counterTime = this.state.seconds
                     } else if (this.state.minutes != 0){
                         this.state.lastTime = 0
                     } else {
+                        this.state.times = 1;
                         this.state.lastTime = this.state.counterTime - this.state.seconds
                         this.state.counterTime = this.state.seconds
                     }
@@ -94,18 +109,45 @@
                 }
 
                 componentDidMount() {
-                    this.interval = setInterval(() => this.tick(), 1000);
-                    this.randomWord()
+                    /*this.interval = setInterval(() => this.tick(), 1000);
+                    this.randomWord()*/
+                }
+                renderPlay() {
+                    return <button onClick={() => this.startGame()} className="play-btn">
+                        {this.renderPlayText()}
+                    </button>
                 }
 
+                renderPlayText() {
+                    let text = "Retry";
+                    if (this.state.finished == true) {
+                        text = "Play";
+                    }
+                    return text;
+                }
+
+                startGame() {
+                    if (this.state.finished == true) {
+                        this.state.finished = false;
+                        this.interval = setInterval(() => this.tick(), 1000);
+                    }
+                    this.state.score = 0;
+                    this.state.minutes = 1;
+                    this.state.seconds = 0;
+                    this.randomWord()
+                    this.state.lastTime = 0;
+                    this.state.counterTime = 0;
+                    this.state.times = 0;
+                }
 
                 componentWillUnmount() {
                     clearInterval(this.interval);
                 }
 
-                renderSquare(i) {
+                renderSquare(i, color) {
                     return (
                         <Square
+                        color = {color}
                         value={this.state.squares[i]}
                         onClick={() => this.handleClick(i)}
                         />
@@ -120,86 +162,105 @@
                         <div>{this.state.minutes}:{this.state.seconds}</div>
                         <div className="status"><h3>{this.state.word} : {this.state.lastTime} Seconds</h3></div>
                         <div className="board-row">
-                        {this.renderSquare("a8")}
-                        {this.renderSquare("b8")}
-                        {this.renderSquare("c8")}
-                        {this.renderSquare("d8")}
-                        {this.renderSquare("e8")}
-                        {this.renderSquare("f8")}
-                        {this.renderSquare("g8")}
-                        {this.renderSquare("h8")}
+                        <a href="" className="div-link">8</a>
+                        {this.renderSquare("a8", "#B8E0F0")}
+                        {this.renderSquare("b8", "#5DC8F2")}
+                        {this.renderSquare("c8", "#B8E0F0")}
+                        {this.renderSquare("d8", "#5DC8F2")}
+                        {this.renderSquare("e8", "#B8E0F0")}
+                        {this.renderSquare("f8", "#5DC8F2")}
+                        {this.renderSquare("g8", "#B8E0F0")}
+                        {this.renderSquare("h8", "#5DC8F2")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a7")}
-                        {this.renderSquare("b7")}
-                        {this.renderSquare("c7")}
-                        {this.renderSquare("d7")}
-                        {this.renderSquare("e7")}
-                        {this.renderSquare("f7")}
-                        {this.renderSquare("g7")}
-                        {this.renderSquare("h7")}
+                        <a href="" className="div-link">7</a>
+                        {this.renderSquare("a7", "#5DC8F2")}
+                        {this.renderSquare("b7", "#B8E0F0")}
+                        {this.renderSquare("c7", "#5DC8F2")}
+                        {this.renderSquare("d7", "#B8E0F0")}
+                        {this.renderSquare("e7", "#5DC8F2")}
+                        {this.renderSquare("f7", "#B8E0F0")}
+                        {this.renderSquare("g7", "#5DC8F2")}
+                        {this.renderSquare("h7", "#B8E0F0")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a6")}
-                        {this.renderSquare("b6")}
-                        {this.renderSquare("c6")}
-                        {this.renderSquare("d6")}
-                        {this.renderSquare("e6")}
-                        {this.renderSquare("f6")}
-                        {this.renderSquare("g6")}
-                        {this.renderSquare("h6")}
+                        <a href="" className="div-link">6</a>
+                        {this.renderSquare("a6", "#B8E0F0")}
+                        {this.renderSquare("b6", "#5DC8F2")}
+                        {this.renderSquare("c6", "#B8E0F0")}
+                        {this.renderSquare("d6", "#5DC8F2")}
+                        {this.renderSquare("e6", "#B8E0F0")}
+                        {this.renderSquare("f6", "#5DC8F2")}
+                        {this.renderSquare("g6", "#B8E0F0")}
+                        {this.renderSquare("h6", "#5DC8F2")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a5")}
-                        {this.renderSquare("b5")}
-                        {this.renderSquare("c5")}
-                        {this.renderSquare("d5")}
-                        {this.renderSquare("e5")}
-                        {this.renderSquare("f5")}
-                        {this.renderSquare("g5")}
-                        {this.renderSquare("h5")}
+                        <a href="" className="div-link">5</a>
+                        {this.renderSquare("a5", "#5DC8F2")}
+                        {this.renderSquare("b5", "#B8E0F0")}
+                        {this.renderSquare("c5", "#5DC8F2")}
+                        {this.renderSquare("d5", "#B8E0F0")}
+                        {this.renderSquare("e5", "#5DC8F2")}
+                        {this.renderSquare("f5", "#B8E0F0")}
+                        {this.renderSquare("g5", "#5DC8F2")}
+                        {this.renderSquare("h5", "#B8E0F0")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a4")}
-                        {this.renderSquare("b4")}
-                        {this.renderSquare("c4")}
-                        {this.renderSquare("d4")}
-                        {this.renderSquare("e4")}
-                        {this.renderSquare("f4")}
-                        {this.renderSquare("g4")}
-                        {this.renderSquare("h4")}
+                        <a href="" className="div-link">4</a>
+                        {this.renderSquare("a4", "#B8E0F0")}
+                        {this.renderSquare("b4", "#5DC8F2")}
+                        {this.renderSquare("c4", "#B8E0F0")}
+                        {this.renderSquare("d4", "#5DC8F2")}
+                        {this.renderSquare("e4", "#B8E0F0")}
+                        {this.renderSquare("f4", "#5DC8F2")}
+                        {this.renderSquare("g4", "#B8E0F0")}
+                        {this.renderSquare("h4", "#5DC8F2")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a3")}
-                        {this.renderSquare("b3")}
-                        {this.renderSquare("c3")}
-                        {this.renderSquare("d3")}
-                        {this.renderSquare("e3")}
-                        {this.renderSquare("f3")}
-                        {this.renderSquare("g3")}
-                        {this.renderSquare("h3")}
+                        <a href="" className="div-link">3</a>
+                        {this.renderSquare("a3", "#5DC8F2")}
+                        {this.renderSquare("b3", "#B8E0F0")}
+                        {this.renderSquare("c3", "#5DC8F2")}
+                        {this.renderSquare("d3", "#B8E0F0")}
+                        {this.renderSquare("e3", "#5DC8F2")}
+                        {this.renderSquare("f3", "#B8E0F0")}
+                        {this.renderSquare("g3", "#5DC8F2")}
+                        {this.renderSquare("h3", "#B8E0F0")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a2")}
-                        {this.renderSquare("b2")}
-                        {this.renderSquare("c2")}
-                        {this.renderSquare("d2")}
-                        {this.renderSquare("e2")}
-                        {this.renderSquare("f2")}
-                        {this.renderSquare("g2")}
-                        {this.renderSquare("h2")}
+                        <a href="" className="div-link">2</a>
+                        {this.renderSquare("a2", "#B8E0F0")}
+                        {this.renderSquare("b2", "#5DC8F2")}
+                        {this.renderSquare("c2", "#B8E0F0")}
+                        {this.renderSquare("d2", "#5DC8F2")}
+                        {this.renderSquare("e2", "#B8E0F0")}
+                        {this.renderSquare("f2", "#5DC8F2")}
+                        {this.renderSquare("g2", "#B8E0F0")}
+                        {this.renderSquare("h2", "#5DC8F2")}
                         </div>
                         <div className="board-row">
-                        {this.renderSquare("a1")}
-                        {this.renderSquare("b1")}
-                        {this.renderSquare("c1")}
-                        {this.renderSquare("d1")}
-                        {this.renderSquare("e1")}
-                        {this.renderSquare("f1")}
-                        {this.renderSquare("g1")}
-                        {this.renderSquare("h1")}
+                        <a href="" className="div-link">1</a>
+                        {this.renderSquare("a1", "#5DC8F2")}
+                        {this.renderSquare("b1", "#B8E0F0")}
+                        {this.renderSquare("c1", "#5DC8F2")}
+                        {this.renderSquare("d1", "#B8E0F0")}
+                        {this.renderSquare("e1", "#5DC8F2")}
+                        {this.renderSquare("f1", "#B8E0F0")}
+                        {this.renderSquare("g1", "#5DC8F2")}
+                        {this.renderSquare("h1", "#B8E0F0")}
                         </div>
-                        <div>Score: {this.state.score}</div>
+                        <div className="board-row words-spacing">
+                            <a href="" className="words-link">A</a>
+                            <a href="" className="words-link">B</a>
+                            <a href="" className="words-link">C</a>
+                            <a href="" className="words-link">D</a>
+                            <a href="" className="words-link">E</a>
+                            <a href="" className="words-link">F</a>
+                            <a href="" className="words-link">G</a>
+                            <a href="" className="words-link">H</a>
+                        </div>
+                        <div className="score">Score: {this.state.score}</div>
+                        <div>{this.renderPlay()}</div>
                     </div>
                     );
                 }
