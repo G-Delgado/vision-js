@@ -41,6 +41,7 @@
                         minutes: 1,
                         seconds: 0,
                         score: 0,
+                        history: [],
                         // Esta variable es para evitar el error del tiempo cuando se da click rapido :c ↓
                         times: 0,
                         word: "",
@@ -106,6 +107,11 @@
                     this.setState(state => ({
                         word: `${String.fromCharCode(randomColumn)}${randomRow}`
                     }))
+                    let item = {
+                        id: this.state.history.length,
+                        text: this.state.word
+                    }
+                    this.state.history.push(item)
                 }
 
                 componentDidMount() {
@@ -138,6 +144,7 @@
                     this.state.lastTime = 0;
                     this.state.counterTime = 0;
                     this.state.times = 0;
+                    this.state.history = []
                 }
 
                 componentWillUnmount() {
@@ -261,6 +268,11 @@
                         </div>
                         <div className="score">Score: {this.state.score}</div>
                         <div>{this.renderPlay()}</div>
+                        <ul>
+                            {this.state.history.map(item => (
+                                <li key={item.id}>{item.text}</li>
+                            ))}
+                        </ul>
                     </div>
                     );
                 }
@@ -289,11 +301,11 @@
                         <div>{/* status */}</div>
                         <ol>{/* TODO */}</ol>
                         </div>
-                        <footer class="footer">
-                            <div class="left">
+                        <footer className="footer">
+                            <div>
                                 Made by Gabriel Delgado - Martin Cifuentes 
                             </div>
-                            <div class="right">
+                            <div >
                                 ICESI 2022-1
                             </div>
                         </footer>
