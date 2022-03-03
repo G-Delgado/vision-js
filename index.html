@@ -12,6 +12,7 @@
   <body>
     <div id="root"></div>
         <script type="text/babel">
+            
             function Square(props){
                 return (
                     <button className="square" onClick={props.onClick}>
@@ -65,6 +66,15 @@
                     }
                     this.setState({squares: squares});
                     this.randomWord()
+                }
+
+                randomWord() {
+                    const randomRow = Math.floor(Math.random() * (9 - 1)) + 1;
+                    const randomColumn = Math.floor(Math.random() * (73-65)) + 65;
+
+                    this.setState(state => ({
+                        word: `${String.fromCharCode(randomColumn)}${randomRow}`
+                    }))
                 }
 
                 componentDidMount() {
@@ -178,6 +188,39 @@
                     );
                 }
             }
+
+            class Game extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                    lastSeconds: 0,
+                    history: [{
+                        squares: Array(9).fill(null),
+                    }],
+                    xIsNext: true,
+                    };
+                }
+
+                render() {
+                    return (
+                    <div className="game">
+                        <div><h1>Chess Vision React.js</h1></div>
+                        <div className="game-board">
+                        <Board items={this.state.items}/>
+                        </div>
+                        <div className="game-info">
+                        <div>{/* status */}</div>
+                        <ol>{/* TODO */}</ol>
+                        </div>
+                    </div>
+                    );
+                }
+            }
+
+            ReactDOM.render(
+                <Game />,
+                document.getElementById('root')
+            )
         </script>
     </body>
 </html>
